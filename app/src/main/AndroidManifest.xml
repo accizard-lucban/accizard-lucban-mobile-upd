@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.accizardlucban">
+
+    <!-- Required permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Storage permissions for different API levels -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <!-- Feature requirements -->
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/accizardlogotype"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name1"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AccizardLucban"
+        android:requestLegacyExternalStorage="true"
+        tools:targetApi="31">
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBirwIJjXcvLsVbcBzo9vRISanNNuan_xU" />
+
+        <!-- Google Play Services Version -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!-- Mapbox Access Token -->
+        <meta-data
+            android:name="com.mapbox.maps.token"
+            android:value="pk.eyJ1IjoiYWNjaXphcmQtbHVjYmFuIiwiYSI6ImNtY3VhOHdxODAwcjcya3BzYTR2M25kcTEifQ.aBi4Zmkezyqa7Pfh519KbQ" />
+
+        <!-- Launcher Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AccizardLucban">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Authentication Activities -->
+        <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".PasswordRecoveryActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".AccountVerificationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".RegistrationActivity" />
+
+        <!-- Registration Activities -->
+        <activity
+            android:name=".RegistrationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".ProfilePictureActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".RegistrationActivity" />
+
+        <activity
+            android:name=".AddressInfoActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".RegistrationActivity" />
+
+        <activity
+            android:name=".ValidIdActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".RegistrationActivity" />
+
+        <activity
+            android:name=".SuccessActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".RegistrationActivity" />
+
+        <!-- Onboarding Activity -->
+        <activity
+            android:name=".OnBoardingActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <!-- Main App Activities -->
+        <activity
+            android:name=".MainDashboard"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".MapViewActivity"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".ReportSubmissionActivity"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".AlertsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".Facilities"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <activity
+            android:name=".TermAndConditionsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainDashboard" />
+
+        <!-- File Provider for camera and file operations -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.accizardlucban.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+    </application>
+
+</manifest>

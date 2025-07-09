@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Mapbox MapView -->
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomNavigationView" />
+
+    <!-- Search Bar -->
+    <LinearLayout
+        android:id="@+id/searchBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@android:color/transparent"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:id="@+id/filterButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_filter"
+            android:background="@drawable/circle_white_bg"
+            android:padding="10dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="Filter"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <EditText
+            android:id="@+id/searchLocationEditText"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/search_background"
+            android:hint="Search Location"
+            android:textColorHint="#999999"
+            android:padding="12dp"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/profileButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_profile"
+            android:background="@drawable/circle_white_bg"
+            android:padding="8dp"
+            android:contentDescription="Profile"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Alert FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/alertFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/emergencyFab"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_alert"
+        app:backgroundTint="#FF9800"
+        app:tint="@android:color/white"
+        app:fabSize="mini"
+        android:contentDescription="Alert" />
+
+    <!-- Emergency FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/emergencyFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/bottomNavigationView"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_emergency"
+        app:backgroundTint="#FF5722"
+        app:tint="@android:color/white"
+        android:contentDescription="Emergency" />
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/homeTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textColor="#999999"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chat"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:textColor="#999999"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/reportTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_report"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:textColor="#999999"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mapTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/mapIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_map_selected"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:id="@+id/mapText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map"
+                android:textColor="#FF5722"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alertsTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_alerts"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alerts"
+                android:textColor="#999999"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profileTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_profile"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textColor="#999999"
+                android:textSize="12sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

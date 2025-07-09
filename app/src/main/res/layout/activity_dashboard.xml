@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+    <!-- Header Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:gravity="center_vertical">
+
+        <!-- Logo and App Name -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:src="@drawable/accizard_logotype_logomark_svg"
+                android:layout_marginEnd="10dp"/>
+
+        </LinearLayout>
+
+        <!-- Header Icons -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/helpButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_help"
+                android:background="@drawable/circle_white_bg"
+                android:padding="8dp"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Help Button"/>
+
+            <ImageView
+                android:id="@+id/profileButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_person"
+                android:background="@drawable/circle_white_bg"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="Profile Button"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Welcome Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="20dp">
+
+        <TextView
+            android:id="@+id/userNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello, Winter"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_location"
+                android:layout_marginEnd="5dp"/>
+
+            <TextView
+                android:id="@+id/locationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Brgy. Tinamnan"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Call Button -->
+    <LinearLayout
+        android:id="@+id/callButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/rounded_white_bg"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="20dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_call"
+            android:layout_marginEnd="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Swipe to Call Lucban LDRRMO"
+            android:textColor="#999999"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/rounded_top_bg"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Report Summaries -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report Summaries"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="30dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="15dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_report"
+                            android:layout_marginBottom="5dp"/>
+
+                        <TextView
+                            android:id="@+id/reportCountText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="50"
+                            android:textColor="#333333"
+                            android:textSize="24sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="This Month"
+                            android:textColor="#666666"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lucban, Quezon"
+                            android:textColor="#999999"
+                            android:textSize="10sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="15dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_emergency"
+                            android:layout_marginBottom="5dp"/>
+
+                        <TextView
+                            android:id="@+id/emergencyCountText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2"
+                            android:textColor="#333333"
+                            android:textSize="24sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="This Month"
+                            android:textColor="#666666"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Barangay"
+                            android:textColor="#999999"
+                            android:textSize="10sp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Safety Tips -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Safety Tips"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
+
+            <!-- Safety Tips Grid -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Row 1 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/roadSafetyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="7.5dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Road Safety"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_car"
+                                android:background="@drawable/circle_yellow_bg"
+                                android:padding="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/floodSafetyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="7.5dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Flood Safety"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_flood"
+                                android:background="@drawable/circle_blue_bg"
+                                android:padding="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Row 2 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/fireSafetyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="7.5dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Fire Safety"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_fire"
+                                android:background="@drawable/circle_red_bg"
+                                android:padding="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/earthquakeSafetyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="7.5dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Earthquake\nSafety"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_earthquake"
+                                android:background="@drawable/circle_orange_bg"
+                                android:padding="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Row 3 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="30dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/landslideSafetyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="7.5dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Landslide Safety"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_landslide"
+                                android:background="@drawable/circle_green_bg"
+                                android:padding="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/volcanicSafetyCard"
+                        android:layout_width="0dp"
+                        android:layout_height="80dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="7.5dp"
+                        app:cardCornerRadius="15dp"
+                        app:cardElevation="2dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:padding="15dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Volcanic Safety"
+                                android:textColor="#333333"
+                                android:textSize="14sp"
+                                android:textStyle="bold"/>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_volcanic"
+                                android:background="@drawable/circle_purple_bg"
+                                android:padding="8dp"/>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Emergency Contacts -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Emergency Contacts"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="80dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="15dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_emergency"
+                            android:background="@drawable/circular_gray_background"
+                            android:padding="8dp"
+                            android:layout_marginBottom="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MDRRMO Hotline"
+                            android:textColor="#333333"
+                            android:textSize="10sp"
+                            android:gravity="center"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="540-1709"
+                            android:textColor="#FF5722"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="5dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="15dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_police"
+                            android:background="@drawable/circular_gray_background"
+                            android:padding="8dp"
+                            android:layout_marginBottom="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Police Station"
+                            android:textColor="#333333"
+                            android:textSize="10sp"
+                            android:gravity="center"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="117"
+                            android:textColor="#2196F3"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="15dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_health"
+                            android:background="@drawable/circular_gray_background"
+                            android:padding="8dp"
+                            android:layout_marginBottom="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rural Health"
+                            android:textColor="#333333"
+                            android:textSize="10sp"
+                            android:gravity="center"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="540-9"
+                            android:textColor="#4CAF50"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:id="@+id/homeTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home_selected"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textColor="#FF5722"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chat"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/reportTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_report"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mapTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_map"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alertsTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_alerts"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alerts"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profileTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_profile"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

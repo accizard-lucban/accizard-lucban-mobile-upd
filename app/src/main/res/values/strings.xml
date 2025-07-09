@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name1">Accizard Lucban</string>
+
+    <string name="app_name">Report App</string>
+    <string name="submit_report">Submit a Report</string>
+    <string name="report_type">Report Type</string>
+    <string name="description">Description</string>
+    <string name="description_hint">Provide additional details about the incident.</string>
+    <string name="location_information">Location Information</string>
+    <string name="location_hint">Enter Report Address</string>
+    <string name="media_attachments">Media Attachments</string>
+    <string name="upload_images">📷 Upload Images</string>
+    <string name="submit_report_button">Submit Report</string>
+    <string name="report_log">Report Log</string>
+    <string name="search_location">Search Location</string>
+
+    <string name="timeline">Timeline</string>
+    <string name="today">Today</string>
+    <string name="this_week">This Week</string>
+    <string name="this_month">This Month</string>
+    <string name="this_year">This Year</string>
+    <string name="incident_types">Incident Types</string>
+    <string name="incident_types_subtitle">Select any type if you want to toggle certain map view or all incident</string>
+    <string name="emergency_support_facilities">Emergency Support Facilities</string>
+    <string name="heatmap_view">🔥 Heatmap View</string>
+    <string name="road_accident">🚗 Road Accident</string>
+    <string name="fire">🔥 Fire</string>
+    <string name="medical_emergency">🏥 Medical Emergency</string>
+    <string name="flooding">🌊 Flooding</string>
+    <string name="volcanic_activity">🌋 Volcanic Activity</string>
+    <string name="landslide">⛰️ Landslide</string>
+    <string name="earthquake">🏚️ Earthquake</string>
+    <string name="civil_disturbance">⚠️ Civil Disturbance</string>
+    <string name="armed_conflict">🔴 Armed Conflict</string>
+    <string name="infectious_disease">🦠 Infectious Disease</string>
+    <string name="evacuation_centers">🏠 Evacuation Centers</string>
+    <string name="health_facilities">🏥 Health Facilities</string>
+    <string name="police_stations">👮 Police Stations</string>
+    <string name="fire_stations">🚒 Fire Stations</string>
+    <string name="government_offices">🏛️ Government Offices</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_chat">Chat</string>
+    <string name="nav_report">Report</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_alerts">Alerts</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Report Types -->
+    <string name="report_type_default">Report Type</string>
+    <string name="report_type_accident">Road Accident</string>
+    <string name="report_type_emergency">Emergency</string>
+    <string name="report_type_infrastructure">Infrastructure Issue</string>
+    <string name="report_type_safety">Public Safety</string>
+    <string name="report_type_environmental">Environmental Concern</string>
+    <string name="report_type_other">Other</string>
+
+    <!-- Status -->
+    <string name="status_submitted">Submitted</string>
+    <string name="status_pending">Pending</string>
+    <string name="status_redundant">Redundant Report</string>
+    <!-- Login Screen -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="email_hint">your@email.com</string>
+    <string name="password_hint">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="dont_have_account">Don\'t have an account? </string>
+    <string name="sign_up">Sign up</string>
+    <string name="emergency">Emergency?</string>
+    <string name="swipe_to_call">Swipe to Call Lucban LDRRMO</string>
+
+    <!-- Reset Password Screen -->
+    <string name="reset_password">Reset Password</string>
+    <string name="enter_email_reset">Enter your email to receive\na password reset link</string>
+
+    <!-- Password Recovery Screen -->
+    <string name="password_recovery">Password Recovery</string>
+    <string name="recovery_instructions">Recovery instructions have been\nsent to accizard@gmail.com</string>
+    <string name="go_back_to_login">Go Back to Login</string>
+
+    <!-- Account Verification Screen -->
+    <string name="oops_sorry">Oops! We\'re sorry!</string>
+    <string name="account_not_verified">It looks like your account is not yet verified.\nWe will notify you when your account is\nverified before you can login on the app.</string>
+
+    <!-- Common -->
+    <string name="app_title">ACCIZARD\nLUCBAN</string>
+    <string name="app_tagline">REPORT PROTECT PREVENT</string>
+
+    <!-- Error Messages -->
+    <string name="email_required">Email is required</string>
+    <string name="password_required">Password is required</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="login_successful">Login successful!</string>
+
+    <string name="mapbox_access_token">pk.eyJ1IjoiYWNjaXphcmQtbHVjYmFuIiwiYSI6ImNtY3VhOHdxODAwcjcya3BzYTR2M25kcTEifQ.aBi4Zmkezyqa7Pfh519KbQ</string>
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color">#c14d32</color>
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#E64A19</color>
+    <color name="colorAccent">#FF5722</color>
+    <color name="Accent">#d6302c</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_light">#E0E0E0</color>
+    <color name="gray_medium">#666666</color>
+    <color name="gray_dark">#333333</color>
+    <color name="orange_light">#FFCCBC</color>
+    <color name="selected_background">#E3F2FD</color>
+
+    <color name="text_dark">#2B2B2B</color>
+    <color name="text_hint">#666666</color>
+
+    <color name="orange_primary">#FF5722</color>
+    <color name="orange_dark">#E64A19</color>
+
+    <color name="dark_gray">#2C2C2C</color>
+    <color name="medium_gray">#6C6C6C</color>
+    <color name="light_gray">#BDBDBD</color>
+    <color name="background_gray">#F5F5F5</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="transparent_white">#80FFFFFF</color>
+
+    <!-- Step indicator colors -->
+    <color name="step_inactive">#E0E0E0</color>
+
+    <color name="orange_secondary">#FF7043</color>
+
+    <!-- Bottom Navigation Colors -->
+    <color name="bottom_nav_selected">#FF5722</color>
+    <color name="bottom_nav_unselected">#999999</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">#333333</color>
+    <color name="text_secondary">#666666</color>
+
+    <!-- Background Colors -->
+    <color name="background_primary">#F5F5F5</color>
+    <color name="background_card">#FFFFFF</color>
+
+    <!-- Status Colors -->
+    <color name="status_submitted">#4CAF50</color>
+    <color name="status_pending">#FF9800</color>
+    <color name="status_redundant">#9C27B0</color>
+</resources>

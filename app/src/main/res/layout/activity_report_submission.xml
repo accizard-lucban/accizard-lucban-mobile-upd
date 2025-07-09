@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Submit a Report"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#333333" />
+
+        <ImageButton
+            android:id="@+id/profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_profile"
+            android:background="@drawable/circle_white_bg"
+            android:padding="8dp"
+            android:contentDescription="Profile"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerInside" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Report Type Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report Type"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/reportTypeSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext_background"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Description Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/descriptionEditText"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Provide additional details about the incident."
+                android:textColorHint="#999999"
+                android:padding="12dp"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:lines="5"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Location Information Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location Information"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/locationEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edittext_background"
+                    android:hint="Enter Report Address"
+                    android:textColorHint="#999999"
+                    android:padding="12dp"
+                    android:inputType="text" />
+
+                <ImageView
+                    android:id="@+id/locationButton"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_location"
+                    android:background="@drawable/location_button_background"
+                    android:padding="12dp"
+                    android:layout_marginStart="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Get Location" />
+
+            </LinearLayout>
+
+            <!-- Media Attachments Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Media Attachments"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/uploadImagesButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="📷 Upload Images"
+                android:textSize="16sp"
+                android:textColor="#666666"
+                android:background="@drawable/button_outline_background"
+                android:layout_marginBottom="24dp"
+                style="?android:attr/borderlessButtonStyle" />
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/submitReportButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Submit Report"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/submit_button_background"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Report Log Section - Enhanced with Card Design -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white"
+                android:padding="16dp"
+                android:layout_marginTop="8dp"
+                android:elevation="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Report Log"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- RecyclerView for dynamic report list -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/reportLogRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
+                <!-- Report Item 1 - Road Accident -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/report_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Road Accident"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Redundant Report"
+                            android:textSize="12sp"
+                            android:textColor="#9C27B0"
+                            android:background="@drawable/status_redundant_bg"
+                            android:padding="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="GPS: 40.7505, -73.9934"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="House fire reported on Main Street. Multiple units dispatched."
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View Attachments"
+                        android:textSize="14sp"
+                        android:textColor="#2196F3"
+                        android:textStyle="bold"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_time"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jul 15, 2023 at 2:30 PM"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Report Item 2 - Fire Accident -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/report_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Fire Accident"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Responded"
+                            android:textSize="12sp"
+                            android:textColor="#4CAF50"
+                            android:background="@drawable/status_responded_bg"
+                            android:padding="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Brgy. Tinamnan"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="House fire reported on Main Street. Multiple units dispatched."
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_time"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jul 15, 2023 at 2:30 PM"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Report Item 3 - Medical Emergency -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/report_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Medical Emergency"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not Responded"
+                            android:textSize="12sp"
+                            android:textColor="#F44336"
+                            android:background="@drawable/status_not_responded_bg"
+                            android:padding="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="GPS: 40.7505, -73.9934"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="House fire reported on Main Street. Multiple units dispatched."
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_time"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jul 15, 2023 at 2:30 PM"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Report Item 4 - Flooding -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/report_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Flooding"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pending"
+                            android:textSize="12sp"
+                            android:textColor="#FF9800"
+                            android:background="@drawable/status_pending_bg"
+                            android:padding="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Brgy. Tinamnan"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View Attachments"
+                        android:textSize="14sp"
+                        android:textColor="#2196F3"
+                        android:textStyle="bold"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_time"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jul 15, 2023 at 2:30 PM"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Report Item 5 - Landslide -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/report_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:elevation="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Landslide"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ongoing"
+                            android:textSize="12sp"
+                            android:textColor="#2196F3"
+                            android:background="@drawable/status_ongoing_bg"
+                            android:padding="6dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Brgy. Tinamnan"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View Attachments"
+                        android:textSize="14sp"
+                        android:textColor="#2196F3"
+                        android:textStyle="bold"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_time"
+                            android:layout_marginEnd="8dp"
+                            android:layout_gravity="center_vertical" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jul 15, 2023 at 2:30 PM"
+                            android:textSize="14sp"
+                            android:textColor="#666666" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Bottom Navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:id="@+id/homeTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/chatTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chat"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/reportTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_report_selected"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:textColor="#FF5722"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mapTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_map"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/alertsTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_alerts"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alerts"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profileTab"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_profile"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textColor="#999999"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
