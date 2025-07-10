@@ -1,0 +1,321 @@
+# Firebase Firestore Setup for Accizard Lucban Mobile App
+
+This document provides a comprehensive guide on how Firebase Firestore has been integrated into your Android project and how to use it effectively.
+
+## 🔥 What's Already Set Up
+
+### 1. Firebase Configuration
+- ✅ `google-services.json` file is present and configured
+- ✅ Firebase dependencies are added to `build.gradle.kts`
+- ✅ Firebase BOM (Bill of Materials) is configured for version management
+
+### 2. Firestore Helper Class
+- ✅ `FirestoreHelper.java` - A utility class that provides easy-to-use methods for all Firestore operations
+- ✅ Data models (`User.java`, `Report.java`) for type safety
+- ✅ Integration examples in activities
+
+## 📁 Project Structure
+
+```
+app/src/main/java/com/example/accizardlucban/
+├── FirestoreHelper.java          # Main Firestore utility class
+├── models/
+│   ├── User.java                 # User data model
+│   └── Report.java               # Report data model
+├── ProfilePictureActivity.java   # Updated with Firestore integration
+└── ReportSubmissionActivity.java # Updated with Firestore integration
+```
+
+## 🚀 How to Use Firestore
+
+### 1. Basic Firestore Operations
+
+#### Creating a User
+```java
+// Create user data
+Map<String, Object> userData = FirestoreHelper.createUserData(
+    "user@example.com",
+    "John Doe",
+    "+639123456789",
+    "Quezon, Philippines"
+);
+
+// Save to Firestore
+FirestoreHelper.createUser(userId, userData,
+    new OnSuccessListener<Void>() {
+        @Override
+        public void onSuccess(Void aVoid) {
+            // User created successfully
+            Toast.makeText(context, "User created!", Toast.LENGTH_SHORT).show();
+        }
+    },
+    new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            // Handle error
+            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    });
+```
+
+#### Creating a Report
+```java
+// Create report data
+Map<String, Object> reportData = FirestoreHelper.createReportData(
+    userId,
+    "Fire Emergency",
+    "Fire in residential area",
+    "123 Main Street, Lucban",
+    "high",
+    "fire"
+);
+
+// Save to Firestore
+FirestoreHelper.createReport(reportData,
+    new OnSuccessListener<DocumentReference>() {
+        @Override
+        public void onSuccess(DocumentReference documentReference) {
+            // Report created successfully
+            String reportId = documentReference.getId();
+            Toast.makeText(context, "Report submitted!", Toast.LENGTH_SHORT).show();
+        }
+    },
+    new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+            // Handle error
+            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    });
+```
+
+#### Reading Data
+```java
+// Get all reports
+FirestoreHelper.getReports(new OnCompleteListener<QuerySnapshot>() {
+    @Override
+    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            for (DocumentSnapshot document : task.getResult()) {
+                // Process each report
+                String title = document.getString("title");
+                String description = document.getString("description");
+                // ... process other fields
+            }
+        }
+    }
+});
+
+// Get user's reports
+FirestoreHelper.getUserReports(userId, new OnCompleteListener<QuerySnapshot>() {
+    @Override
+    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if (task.isSuccessful()) {
+            // Process user's reports
+        }
+    }
+});
+```
+
+### 2. Using Data Models
+
+#### User Model
+```java
+// Create a user object
+User user = new User(userId, email, fullName, phoneNumber, address);
+user.setProfilePictureUrl(profilePictureUrl);
+user.setVerified(true);
+
+// Convert to Map for Firestore
+Map<String, Object> userData = user.toMap();
+
+// Save to Firestore
+FirestoreHelper.createUser(userId, userData, successListener, failureListener);
+```
+
+#### Report Model
+```java
+// Create a report object
+Report report = new Report(userId, title, description, location, priority, category);
+report.setImageUrl(imageUrl);
+report.setStatus(Report.STATUS_PENDING);
+
+// Convert to Map for Firestore
+Map<String, Object> reportData = report.toMap();
+
+// Save to Firestore
+FirestoreHelper.createReport(reportData, successListener, failureListener);
+```
+
+## 🔧 Firestore Collections
+
+The app uses the following Firestore collections:
+
+### 1. `users`
+- Stores user profile information
+- Document ID: User's Firebase Auth UID
+- Fields: email, fullName, phoneNumber, address, profilePictureUrl, createdAt, isVerified, validIdUrl
+
+### 2. `reports`
+- Stores emergency reports submitted by users
+- Document ID: Auto-generated by Firestore
+- Fields: userId, title, description, location, priority, category, status, imageUrl, timestamp, adminResponse, responseTimestamp
+
+### 3. `alerts`
+- Stores emergency alerts from administrators
+- Document ID: Auto-generated by Firestore
+- Fields: title, message, location, severity, timestamp, isActive
+
+### 4. `chat_messages`
+- Stores chat messages between users and administrators
+- Document ID: Auto-generated by Firestore
+- Fields: userId, message, isAdmin, timestamp
+
+### 5. `facilities`
+- Stores information about emergency facilities
+- Document ID: Auto-generated by Firestore
+- Fields: name, type, location, contact, description
+
+## 🔐 Security Rules
+
+Make sure to set up proper Firestore security rules in your Firebase Console:
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Users can create reports and read all reports
+    match /reports/{reportId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+    }
+    
+    // Users can read alerts
+    match /alerts/{alertId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Users can read/write chat messages
+    match /chat_messages/{messageId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Users can read facilities
+    match /facilities/{facilityId} {
+      allow read: if request.auth != null;
+    }
+  }
+}
+```
+
+## 📱 Integration Examples
+
+### 1. User Registration Flow
+The registration flow has been updated to save user data to Firestore:
+
+1. User fills registration form
+2. User uploads profile picture (optional)
+3. Firebase Auth creates user account
+4. Profile picture is uploaded to Firebase Storage (if provided)
+5. User data is saved to Firestore
+6. User is redirected to success screen
+
+### 2. Report Submission Flow
+The report submission has been updated to save reports to Firestore:
+
+1. User fills report form
+2. Form validation is performed
+3. Report data is created using `FirestoreHelper.createReportData()`
+4. Report is saved to Firestore using `FirestoreHelper.createReport()`
+5. Success/error message is shown to user
+
+## 🛠️ Adding New Features
+
+### Adding a New Collection
+1. Add collection name constant to `FirestoreHelper.java`
+2. Create a data model class (optional but recommended)
+3. Add CRUD methods to `FirestoreHelper.java`
+4. Update Firestore security rules
+
+### Example: Adding a Comments Collection
+```java
+// In FirestoreHelper.java
+public static final String COLLECTION_COMMENTS = "comments";
+
+public static void createComment(Map<String, Object> commentData,
+                                OnSuccessListener<DocumentReference> successListener,
+                                OnFailureListener failureListener) {
+    getInstance().collection(COLLECTION_COMMENTS)
+            .add(commentData)
+            .addOnSuccessListener(successListener)
+            .addOnFailureListener(failureListener);
+}
+```
+
+## 🔍 Debugging
+
+### Enable Firestore Logging
+Add this to your Application class or MainActivity:
+```java
+FirebaseFirestore.setLoggingEnabled(true);
+```
+
+### Check Firestore Rules
+Make sure your Firestore security rules allow the operations you're trying to perform.
+
+### Monitor Network Requests
+Use Android Studio's Network Inspector to monitor Firestore requests.
+
+## 📊 Performance Tips
+
+1. **Use Indexes**: Create composite indexes for queries with multiple where clauses
+2. **Pagination**: Use `limit()` and `startAfter()` for large collections
+3. **Offline Support**: Firestore automatically caches data for offline use
+4. **Batch Operations**: Use `WriteBatch` for multiple operations
+
+## 🚨 Common Issues
+
+### 1. "Missing or insufficient permissions"
+- Check Firestore security rules
+- Ensure user is authenticated
+- Verify document ownership
+
+### 2. "Network error"
+- Check internet connection
+- Verify Firebase project configuration
+- Check if Firebase services are enabled
+
+### 3. "Invalid document reference"
+- Ensure document ID is valid
+- Check if document exists before updating
+
+## 📞 Support
+
+If you encounter any issues with the Firestore setup:
+
+1. Check the Firebase Console for error logs
+2. Verify your `google-services.json` file is up to date
+3. Ensure all Firebase services are enabled in your project
+4. Check the Android logs for detailed error messages
+
+## 🔄 Next Steps
+
+1. **Enable Firebase Authentication** for user management
+2. **Set up Firebase Storage** for file uploads
+3. **Configure Firebase Cloud Messaging** for push notifications
+4. **Add offline support** for better user experience
+5. **Implement real-time listeners** for live updates
+
+---
+
+This setup provides a solid foundation for your emergency reporting app with Firebase Firestore. The helper classes make it easy to perform common operations while maintaining good code organization and type safety. 
