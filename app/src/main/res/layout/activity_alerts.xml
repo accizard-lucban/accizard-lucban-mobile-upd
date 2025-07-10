@@ -37,7 +37,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
-            android:background="@drawable/profile_circle"
+            android:background="@drawable/circle_white_bg"
             android:src="@drawable/ic_person"
             android:padding="8dp"
             android:clickable="true"
@@ -395,33 +395,6 @@
                 android:text="Alerts"
                 android:textSize="10sp"
                 android:textColor="#FF5722"
-                android:layout_marginTop="2dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nav_profile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_person"
-                android:tint="#CCCCCC" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textSize="10sp"
-                android:textColor="#CCCCCC"
                 android:layout_marginTop="2dp" />
 
         </LinearLayout>

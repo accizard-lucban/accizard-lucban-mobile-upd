@@ -23,9 +23,6 @@ public class ProfileActivity extends AppCompatActivity {
     private Switch locationSwitch, notificationSwitch;
     private LinearLayout termsLayout, deleteAccountLayout;
 
-    // Navigation buttons
-    private LinearLayout homeTab, chatTab, reportTab, mapTab, alertsTab, profileTab;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +30,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         initViews();
         setupClickListeners();
-        setupNavigationListeners();
         loadUserData();
     }
 
@@ -46,14 +42,6 @@ public class ProfileActivity extends AppCompatActivity {
         notificationSwitch = findViewById(R.id.notification_switch);
         termsLayout = findViewById(R.id.terms_layout);
         deleteAccountLayout = findViewById(R.id.delete_account_layout);
-
-        // Initialize navigation tabs
-        homeTab = findViewById(R.id.homeTab);
-        chatTab = findViewById(R.id.chatTab);
-        reportTab = findViewById(R.id.reportTab);
-        mapTab = findViewById(R.id.mapTab);
-        alertsTab = findViewById(R.id.alertsTab);
-        profileTab = findViewById(R.id.profileTab);
     }
 
     private void setupClickListeners() {
@@ -111,67 +99,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showDeleteAccountDialog();
-            }
-        });
-    }
-
-    private void setupNavigationListeners() {
-        homeTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Home/Main Activity
-                Intent intent = new Intent(ProfileActivity.this, MainDashboard.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        chatTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Chat Activity
-                Intent intent = new Intent(ProfileActivity.this, ChatActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        reportTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Report Activity
-                Intent intent = new Intent(ProfileActivity.this, ReportSubmissionActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        mapTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Map Activity
-                Intent intent = new Intent(ProfileActivity.this, MapViewActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        alertsTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Navigate to Alerts Activity
-                Intent intent = new Intent(ProfileActivity.this, AlertsActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        profileTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Already in Profile Activity, do nothing or show toast
-                Toast.makeText(ProfileActivity.this, "You are already in Profile", Toast.LENGTH_SHORT).show();
             }
         });
     }

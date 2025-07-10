@@ -46,8 +46,8 @@
             android:imeOptions="actionSearch"
             android:layout_marginEnd="8dp" />
 
-        <ImageView
-            android:id="@+id/profileButton"
+        <ImageButton
+            android:id="@+id/profile"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_profile"
@@ -55,7 +55,8 @@
             android:padding="8dp"
             android:contentDescription="Profile"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            android:scaleType="centerInside" />
 
     </LinearLayout>
 
@@ -221,31 +222,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Alerts"
-                android:textColor="#999999"
-                android:textSize="12sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/profileTab"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_profile"
-                android:layout_marginBottom="2dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
                 android:textColor="#999999"
                 android:textSize="12sp"/>
         </LinearLayout>

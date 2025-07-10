@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -25,7 +26,7 @@ public class MapViewActivity extends AppCompatActivity {
     private FloatingActionButton emergencyFab;
     private FloatingActionButton alertFab;
     private ImageView filterButton;
-    private ImageView profileButton;
+    private ImageButton profile;
 
     // Navigation tabs
     private LinearLayout homeTab;
@@ -33,7 +34,6 @@ public class MapViewActivity extends AppCompatActivity {
     private LinearLayout reportTab;
     private LinearLayout mapTab;
     private LinearLayout alertsTab;
-    private LinearLayout profileTab;
 
     // Mapbox MapView
     private MapView mapView;
@@ -160,7 +160,7 @@ public class MapViewActivity extends AppCompatActivity {
         emergencyFab = findViewById(R.id.emergencyFab);
         alertFab = findViewById(R.id.alertFab);
         filterButton = findViewById(R.id.filterButton);
-        profileButton = findViewById(R.id.profileButton);
+        profile = findViewById(R.id.profile);
 
         // Initialize navigation tabs
         homeTab = findViewById(R.id.homeTab);
@@ -168,7 +168,6 @@ public class MapViewActivity extends AppCompatActivity {
         reportTab = findViewById(R.id.reportTab);
         mapTab = findViewById(R.id.mapTab);
         alertsTab = findViewById(R.id.alertsTab);
-        profileTab = findViewById(R.id.profileTab);
     }
 
     private void setupClickListeners() {
@@ -206,7 +205,7 @@ public class MapViewActivity extends AppCompatActivity {
             }
         });
 
-        profileButton.setOnClickListener(v -> {
+        profile.setOnClickListener(v -> {
             try {
                 Intent intent = new Intent(MapViewActivity.this, ProfileActivity.class);
                 startActivity(intent);
@@ -229,6 +228,8 @@ public class MapViewActivity extends AppCompatActivity {
             try {
                 Intent intent = new Intent(this, MainDashboard.class);
                 startActivity(intent);
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 finish();
             } catch (Exception e) {
                 Toast.makeText(this, "Error navigating to Home", Toast.LENGTH_SHORT).show();
@@ -236,13 +237,23 @@ public class MapViewActivity extends AppCompatActivity {
         });
 
         chatTab.setOnClickListener(v -> {
-            Toast.makeText(this, "Chat feature coming soon", Toast.LENGTH_SHORT).show();
+            try{
+                Intent intent = new Intent(this, ChatActivity.class);
+                startActivity(intent);
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                finish();
+            } catch (Exception e) {
+                Toast.makeText(this, "Chat feature coming soon", Toast.LENGTH_SHORT).show();
+            }
         });
 
         reportTab.setOnClickListener(v -> {
             try {
                 Intent intent = new Intent(this, ReportSubmissionActivity.class);
                 startActivity(intent);
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 finish();
             } catch (Exception e) {
                 Toast.makeText(this, "Error navigating to Report", Toast.LENGTH_SHORT).show();
@@ -258,16 +269,14 @@ public class MapViewActivity extends AppCompatActivity {
             try {
                 Intent intent = new Intent(this, AlertsActivity.class);
                 startActivity(intent);
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 finish();
             } catch (Exception e) {
                 Toast.makeText(this, "Error navigating to Report", Toast.LENGTH_SHORT).show();
             }
         });
 
-
-        profileTab.setOnClickListener(v -> {
-            Toast.makeText(this, "Profile feature coming soon", Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void setMapTabAsSelected() {

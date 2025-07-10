@@ -49,7 +49,6 @@ public class ReportSubmissionActivity extends AppCompatActivity {
     private LinearLayout reportTab;
     private LinearLayout mapTab;
     private LinearLayout alertsTab;
-    private LinearLayout profileTab;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -92,7 +91,6 @@ public class ReportSubmissionActivity extends AppCompatActivity {
         reportTab = findViewById(R.id.reportTab);
         mapTab = findViewById(R.id.mapTab);
         alertsTab = findViewById(R.id.alertsTab);
-        profileTab = findViewById(R.id.profileTab);
     }
 
     private void setupReportTypeSpinner() {
@@ -169,6 +167,8 @@ public class ReportSubmissionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 navigateToHome();
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         });
 
@@ -176,6 +176,8 @@ public class ReportSubmissionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 navigateToChat();
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         });
 
@@ -191,6 +193,8 @@ public class ReportSubmissionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 navigateToMap();
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         });
 
@@ -198,13 +202,8 @@ public class ReportSubmissionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 navigateToAlerts();
-            }
-        });
-
-        profileTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToProfile();
+                // Optional: Add transition animation
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
             }
         });
     }

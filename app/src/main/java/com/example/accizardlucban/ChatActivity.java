@@ -24,8 +24,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView messagesRecyclerView;
     private EditText messageInput;
-    private ImageView sendButton, backButton;
-    private LinearLayout homeTab, chatTab, reportTab, mapTab, alertsTab, profileTab;
+    private ImageView sendButton, backButton, profileButton;
+    private LinearLayout homeTab, chatTab, reportTab, mapTab, alertsTab;
     private LinearLayout takePhotoButton, openGalleryButton, referenceReportButton;
     private TextView statusText;
 
@@ -59,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
             sendButton = findViewById(R.id.sendButton);
             backButton = findViewById(R.id.backButton);
             statusText = findViewById(R.id.statusText);
+            profileButton = findViewById(R.id.profileButton);
 
             // Bottom navigation
             homeTab = findViewById(R.id.homeTab);
@@ -66,7 +67,6 @@ public class ChatActivity extends AppCompatActivity {
             reportTab = findViewById(R.id.reportTab);
             mapTab = findViewById(R.id.mapTab);
             alertsTab = findViewById(R.id.alertsTab);
-            profileTab = findViewById(R.id.profileTab);
 
             // Action buttons
             takePhotoButton = findViewById(R.id.takePhotoButton);
@@ -216,8 +216,8 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         // Profile tab
-        if (profileTab != null) {
-            profileTab.setOnClickListener(v -> {
+        if (profileButton != null) {
+            profileButton.setOnClickListener(v -> {
                 Log.d(TAG, "Profile tab clicked");
                 try {
                     Intent intent = new Intent(ChatActivity.this, ProfileActivity.class);

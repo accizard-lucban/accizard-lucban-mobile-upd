@@ -16,7 +16,7 @@ public class MainDashboard extends AppCompatActivity {
     private TextView reportCountText, emergencyCountText;
     private CardView roadSafetyCard, floodSafetyCard, fireSafetyCard,
             earthquakeSafetyCard, landslideSafetyCard, volcanicSafetyCard;
-    private LinearLayout homeTab, chatTab, reportTab, mapTab, alertsTab, profileTab;
+    private LinearLayout homeTab, chatTab, reportTab, mapTab, alertsTab;
     private View callButton;
 
     // NEW: ImageView buttons
@@ -61,7 +61,6 @@ public class MainDashboard extends AppCompatActivity {
             reportTab = findViewById(R.id.reportTab);
             mapTab = findViewById(R.id.mapTab);
             alertsTab = findViewById(R.id.alertsTab);
-            profileTab = findViewById(R.id.profileTab);
 
             // Call button
             callButton = findViewById(R.id.callButton);
@@ -146,6 +145,8 @@ public class MainDashboard extends AppCompatActivity {
                     try {
                         Intent intent = new Intent(MainDashboard.this, MapViewActivity.class);
                         startActivity(intent);
+                        // Optional: Add transition animation
+                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(MainDashboard.this, "Map feature coming soon", Toast.LENGTH_SHORT).show();
@@ -158,21 +159,11 @@ public class MainDashboard extends AppCompatActivity {
                     try {
                         Intent intent = new Intent(MainDashboard.this, AlertsActivity.class);
                         startActivity(intent);
+                        // Optional: Add transition animation
+                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(MainDashboard.this, "Alerts feature coming soon", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            if (profileTab != null) {
-                profileTab.setOnClickListener(v -> {
-                    try {
-                        Intent intent = new Intent(MainDashboard.this, ProfileActivity.class);
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(MainDashboard.this, "Profile feature coming soon", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -183,6 +174,8 @@ public class MainDashboard extends AppCompatActivity {
                     try {
                         Intent intent = new Intent(MainDashboard.this, EmergencyCallActivity.class);
                         startActivity(intent);
+                        // Optional: Add transition animation
+                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(MainDashboard.this, "Emergency call feature coming soon", Toast.LENGTH_SHORT).show();
@@ -197,6 +190,8 @@ public class MainDashboard extends AppCompatActivity {
                         // Navigate to HelpActivity or show help dialog
                         Intent intent = new Intent(MainDashboard.this, OnBoardingActivity.class);
                         startActivity(intent);
+                        // Optional: Add transition animation
+                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                         // Alternative: Show help information in a dialog
                         // showHelpDialog();

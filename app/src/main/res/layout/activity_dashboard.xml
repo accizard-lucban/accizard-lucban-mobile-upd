@@ -761,28 +761,5 @@
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"/>
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/profileTab"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:background="?android:attr/selectableItemBackground">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_profile"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Profile"
-                android:textColor="#999999"
-                android:textSize="12sp"
-                android:layout_marginTop="4dp"/>
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
