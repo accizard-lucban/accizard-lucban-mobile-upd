@@ -1,7 +1,8 @@
-package com.example.accizardlucban; // Replace with your actual package name
+package com.example.accizardlucban;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,11 +12,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class ReportSubmissionActivity extends AppCompatActivity {
+
+    private static final String TAG = "ReportSubmissionActivity";
 
     // UI Components
     private Spinner reportTypeSpinner;
@@ -35,10 +51,16 @@ public class ReportSubmissionActivity extends AppCompatActivity {
     private LinearLayout alertsTab;
     private LinearLayout profileTab;
 
+    // Firebase
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report_submission);
+
+        // Initialize Firebase
+        mAuth = FirebaseAuth.getInstance();
 
         // Initialize UI components
         initializeViews();
@@ -237,21 +259,56 @@ public class ReportSubmissionActivity extends AppCompatActivity {
     }
 
     private void submitReport() {
-        // Validate form data
         if (validateForm()) {
+            // Get current user
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser == null) {
+                Toast.makeText(this, "Please sign in to submit a report", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Show loading state
+            submitReportButton.setEnabled(false);
+            submitReportButton.setText("Submitting...");
+
             // Get form data
             String reportType = reportTypeSpinner.getSelectedItem().toString();
             String description = descriptionEditText.getText().toString().trim();
             String location = locationEditText.getText().toString().trim();
 
-            // TODO: Submit report to server or local database
-            Toast.makeText(this, "Report submitted successfully!", Toast.LENGTH_LONG).show();
+            // Create report data
+            Map<String, Object> reportData = FirestoreHelper.createReportData(
+                currentUser.getUid(),
+                reportType,
+                description,
+                location,
+                "medium", // Default priority
+                reportType.toLowerCase()
+            );
 
-            // Clear form after successful submission
-            clearForm();
-
-            // Optional: Navigate to another screen or refresh the report log
-            // navigateToHome();
+            // Save to Firestore
+            FirestoreHelper.createReport(reportData,
+                new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Report submitted successfully with ID: " + documentReference.getId());
+                        Toast.makeText(ReportSubmissionActivity.this, 
+                            "Report submitted successfully!", Toast.LENGTH_SHORT).show();
+                        clearForm();
+                        submitReportButton.setEnabled(true);
+                        submitReportButton.setText("Submit Report");
+                    }
+                },
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error submitting report", e);
+                        Toast.makeText(ReportSubmissionActivity.this, 
+                            "Error submitting report: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        submitReportButton.setEnabled(true);
+                        submitReportButton.setText("Submit Report");
+                    }
+                });
         }
     }
 

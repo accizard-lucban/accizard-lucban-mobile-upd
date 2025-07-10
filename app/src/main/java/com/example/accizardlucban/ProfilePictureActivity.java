@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,8 +19,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class ProfilePictureActivity extends AppCompatActivity {
 
+    private static final String TAG = "ProfilePictureActivity";
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int GALLERY_REQUEST_CODE = 101;
     private static final int CAMERA_PERMISSION_CODE = 102;
@@ -30,6 +49,11 @@ public class ProfilePictureActivity extends AppCompatActivity {
     private String firstName, lastName, mobileNumber, email, password, province, cityTown, barangay;
     private Uri profileImageUri;
     private boolean hasProfilePicture = false;
+    
+    // Firebase instances
+    private FirebaseAuth mAuth;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +61,11 @@ public class ProfilePictureActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_picture);
 
         try {
+            // Initialize Firebase
+            mAuth = FirebaseAuth.getInstance();
+            storage = FirebaseStorage.getInstance();
+            storageRef = storage.getReference();
+            
             initializeViews();
             getIntentData();
             setupClickListeners();
@@ -123,10 +152,7 @@ public class ProfilePictureActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     try {
-                        // Optional: Check if profile picture is uploaded
-                        if (!hasProfilePicture) {
-                            Toast.makeText(ProfilePictureActivity.this, "Please upload a profile picture or skip to continue", Toast.LENGTH_SHORT).show();
-                        }
+                        // Proceed to Valid ID verification
                         proceedToValidId();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -269,6 +295,14 @@ public class ProfilePictureActivity extends AppCompatActivity {
             intent.putExtra("province", province != null ? province : "");
             intent.putExtra("cityTown", cityTown != null ? cityTown : "");
             intent.putExtra("barangay", barangay != null ? barangay : "");
+            
+            // Pass profile picture data if exists
+            if (hasProfilePicture && profileImageUri != null) {
+                intent.putExtra("hasProfilePicture", true);
+                intent.putExtra("profileImageUri", profileImageUri.toString());
+            } else {
+                intent.putExtra("hasProfilePicture", false);
+            }
 
             startActivity(intent);
             Toast.makeText(this, "Proceeding to Valid ID verification", Toast.LENGTH_SHORT).show();

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -21,8 +22,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ValidIdActivity extends AppCompatActivity {
 
+    private static final String TAG = "ValidIdActivity";
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int GALLERY_REQUEST_CODE = 101;
     private static final int CAMERA_PERMISSION_CODE = 102;
@@ -35,6 +53,15 @@ public class ValidIdActivity extends AppCompatActivity {
     private String firstName, lastName, mobileNumber, email, password, province, cityTown, barangay;
     private Uri validIdUri;
     private boolean hasValidId = false;
+    
+    // Profile picture data
+    private boolean hasProfilePicture = false;
+    private String profileImageUriString;
+    
+    // Firebase instances
+    private FirebaseAuth mAuth;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +69,11 @@ public class ValidIdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_valid_id);
 
         try {
+            // Initialize Firebase
+            mAuth = FirebaseAuth.getInstance();
+            storage = FirebaseStorage.getInstance();
+            storageRef = storage.getReference();
+            
             initializeViews();
             getIntentData();
             setupClickListeners();
@@ -54,7 +86,7 @@ public class ValidIdActivity extends AppCompatActivity {
     private void initializeViews() {
         try {
             // Initialize all views
-            ivValidId = findViewById(R.id.iv_valid_id);;
+            ivValidId = findViewById(R.id.iv_valid_id);
             btnUploadFromGallery = findViewById(R.id.btn_upload_gallery);
             btnNext = findViewById(R.id.btn_next);
             btnBack = findViewById(R.id.btn_back);
@@ -98,6 +130,10 @@ public class ValidIdActivity extends AppCompatActivity {
                 province = intent.getStringExtra("province");
                 cityTown = intent.getStringExtra("cityTown");
                 barangay = intent.getStringExtra("barangay");
+                
+                // Get profile picture data
+                hasProfilePicture = intent.getBooleanExtra("hasProfilePicture", false);
+                profileImageUriString = intent.getStringExtra("profileImageUri");
 
                 // Debug: Check if data is received
                 if (firstName == null || lastName == null) {
@@ -159,10 +195,11 @@ public class ValidIdActivity extends AppCompatActivity {
                                 Toast.makeText(ValidIdActivity.this, "Please upload a valid ID to continue", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            proceedToSuccess();
+                            // Create user account and save to Firestore
+                            createUserAccount();
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(ValidIdActivity.this, "Error proceeding to next step: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ValidIdActivity.this, "Error creating account: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -348,30 +385,193 @@ public class ValidIdActivity extends AppCompatActivity {
         }
     }
 
+    private void createUserAccount() {
+        // Show loading indicator
+        btnNext.setEnabled(false);
+        btnNext.setText("Creating Account...");
+        
+        // Create user with Firebase Auth
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // User created successfully
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null) {
+                                // Upload images and save user data
+                                uploadImagesAndSaveUserData(user.getUid());
+                            }
+                        } else {
+                            // Registration failed
+                            btnNext.setEnabled(true);
+                            btnNext.setText("Next");
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(ValidIdActivity.this, 
+                                "Registration failed: " + task.getException().getMessage(), 
+                                Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    private void uploadImagesAndSaveUserData(String userId) {
+        // Upload profile picture if exists
+        if (hasProfilePicture && profileImageUriString != null) {
+            uploadProfilePicture(userId, new OnSuccessListener<String>() {
+                @Override
+                public void onSuccess(String profilePictureUrl) {
+                    // Upload valid ID
+                    uploadValidId(userId, profilePictureUrl);
+                }
+            });
+        } else {
+            // Upload valid ID only
+            uploadValidId(userId, null);
+        }
+    }
+
+    private void uploadProfilePicture(String userId, OnSuccessListener<String> onProfileSuccess) {
+        try {
+            Uri profileImageUri = Uri.parse(profileImageUriString);
+            StorageReference profileImageRef = storageRef.child("profile_pictures/" + userId + ".jpg");
+
+            // Convert image to bytes for upload
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), profileImageUri);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            byte[] data = baos.toByteArray();
+
+            // Upload the image
+            UploadTask uploadTask = profileImageRef.putBytes(data);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // Get the download URL
+                    profileImageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri downloadUri) {
+                            onProfileSuccess.onSuccess(downloadUri.toString());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Failed to get profile picture download URL", e);
+                            onProfileSuccess.onSuccess(null);
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Failed to upload profile picture", e);
+                    onProfileSuccess.onSuccess(null);
+                }
+            });
+        } catch (Exception e) {
+            Log.w(TAG, "Error processing profile picture", e);
+            onProfileSuccess.onSuccess(null);
+        }
+    }
+
+    private void uploadValidId(String userId, String profilePictureUrl) {
+        if (validIdUri == null) {
+            saveUserDataToFirestore(userId, profilePictureUrl, null);
+            return;
+        }
+
+        try {
+            StorageReference validIdRef = storageRef.child("valid_ids/" + userId + ".jpg");
+
+            // Convert image to bytes for upload
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), validIdUri);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+            byte[] data = baos.toByteArray();
+
+            // Upload the image
+            UploadTask uploadTask = validIdRef.putBytes(data);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // Get the download URL
+                    validIdRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri downloadUri) {
+                            saveUserDataToFirestore(userId, profilePictureUrl, downloadUri.toString());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Failed to get valid ID download URL", e);
+                            saveUserDataToFirestore(userId, profilePictureUrl, null);
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Failed to upload valid ID", e);
+                    saveUserDataToFirestore(userId, profilePictureUrl, null);
+                }
+            });
+        } catch (Exception e) {
+            Log.w(TAG, "Error processing valid ID", e);
+            saveUserDataToFirestore(userId, profilePictureUrl, null);
+        }
+    }
+
+    private void saveUserDataToFirestore(String userId, String profilePictureUrl, String validIdUrl) {
+        // Create user data map
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("userId", userId);
+        userData.put("email", email);
+        userData.put("fullName", firstName + " " + lastName);
+        userData.put("firstName", firstName);
+        userData.put("lastName", lastName);
+        userData.put("phoneNumber", mobileNumber);
+        userData.put("address", province + ", " + cityTown + ", " + barangay);
+        userData.put("province", province);
+        userData.put("cityTown", cityTown);
+        userData.put("barangay", barangay);
+        userData.put("profilePictureUrl", profilePictureUrl != null ? profilePictureUrl : "");
+        userData.put("validIdUrl", validIdUrl != null ? validIdUrl : "");
+        userData.put("createdAt", System.currentTimeMillis());
+        userData.put("isVerified", false);
+
+        // Save to Firestore using FirestoreHelper
+        FirestoreHelper.createUser(userId, userData,
+                new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "User data saved successfully");
+                        // Navigate to success screen
+                        proceedToSuccess();
+                    }
+                },
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        btnNext.setEnabled(true);
+                        btnNext.setText("Next");
+                        Log.w(TAG, "Error saving user data", e);
+                        Toast.makeText(ValidIdActivity.this, 
+                            "Error saving user data: " + e.getMessage(), 
+                            Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
     private void proceedToSuccess() {
         try {
-            // Check if SuccessActivity exists, if not, just show a success message
             Intent intent = new Intent(ValidIdActivity.this, SuccessActivity.class);
-
-            // Pass user data to SuccessActivity
-            intent.putExtra("firstName", firstName);
-            intent.putExtra("lastName", lastName);
-            intent.putExtra("email", email);
-            intent.putExtra("mobileNumber", mobileNumber);
-            intent.putExtra("province", province);
-            intent.putExtra("cityTown", cityTown);
-            intent.putExtra("barangay", barangay);
-
+            intent.putExtra("message", "Account created successfully!");
+            intent.putExtra("nextActivity", "MainActivity");
             startActivity(intent);
-            Toast.makeText(this, "Registration completed successfully!", Toast.LENGTH_SHORT).show();
-
-            // Clear the activity stack to prevent going back
-            finishAffinity();
-
+            finish();
         } catch (Exception e) {
             e.printStackTrace();
-            // If SuccessActivity doesn't exist, just show success message
-            Toast.makeText(this, "Registration completed successfully! " + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Registration completed successfully!", Toast.LENGTH_LONG).show();
             finish();
         }
     }
