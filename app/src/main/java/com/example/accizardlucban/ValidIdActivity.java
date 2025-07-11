@@ -30,6 +30,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -386,32 +389,63 @@ public class ValidIdActivity extends AppCompatActivity {
     }
 
     private void createUserAccount() {
-        // Show loading indicator
         btnNext.setEnabled(false);
         btnNext.setText("Creating Account...");
-        
+
         // Create user with Firebase Auth
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // User created successfully
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                // Upload images and save user data
-                                uploadImagesAndSaveUserData(user.getUid());
+                                // Generate custom userId (RID-[auto-incremented])
+                                generateCustomUserIdAndContinue(user);
                             }
                         } else {
-                            // Registration failed
                             btnNext.setEnabled(true);
                             btnNext.setText("Next");
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(ValidIdActivity.this, 
-                                "Registration failed: " + task.getException().getMessage(), 
-                                Toast.LENGTH_LONG).show();
+                            Toast.makeText(ValidIdActivity.this,
+                                    "Registration failed: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
+                });
+    }
+
+    // Generate custom userId in the format RID-[auto-incremented value]
+    private void generateCustomUserIdAndContinue(FirebaseUser firebaseUser) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .orderBy("userId", Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    String newUserId = "RID-1";
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            String lastUserId = doc.getString("userId");
+                            if (lastUserId != null && lastUserId.startsWith("RID-")) {
+                                try {
+                                    int lastNum = Integer.parseInt(lastUserId.replace("RID-", ""));
+                                    newUserId = "RID-" + (lastNum + 1);
+                                } catch (NumberFormatException e) {
+                                    // fallback to RID-1 if parsing fails
+                                    newUserId = "RID-1";
+                                }
+                            }
+                            break; // Only need the first (highest)
+                        }
+                    }
+                    // Continue registration with newUserId
+                    uploadImagesAndSaveUserData(newUserId);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to generate user ID: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    btnNext.setEnabled(true);
+                    btnNext.setText("Next");
                 });
     }
 
@@ -525,6 +559,7 @@ public class ValidIdActivity extends AppCompatActivity {
         // Create user data map
         Map<String, Object> userData = new HashMap<>();
         userData.put("userId", userId);
+        userData.put("firebaseUid", mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : "");
         userData.put("email", email);
         userData.put("fullName", firstName + " " + lastName);
         userData.put("firstName", firstName);
@@ -539,7 +574,7 @@ public class ValidIdActivity extends AppCompatActivity {
         userData.put("createdAt", System.currentTimeMillis());
         userData.put("isVerified", false);
 
-        // Save to Firestore using FirestoreHelper
+        // Save to Firestore using FirestoreHelper with RID-# as document ID
         FirestoreHelper.createUser(userId, userData,
                 new OnSuccessListener<Void>() {
                     @Override
@@ -555,9 +590,9 @@ public class ValidIdActivity extends AppCompatActivity {
                         btnNext.setEnabled(true);
                         btnNext.setText("Next");
                         Log.w(TAG, "Error saving user data", e);
-                        Toast.makeText(ValidIdActivity.this, 
-                            "Error saving user data: " + e.getMessage(), 
-                            Toast.LENGTH_LONG).show();
+                        Toast.makeText(ValidIdActivity.this,
+                                "Error saving user data: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
     }

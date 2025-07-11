@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.NonNull;
+import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
     private Button signInButton;
     private TextView forgotPasswordText, signUpText, emergencyText;
     private LinearLayout callLucbanLayout; // Changed from TextView to LinearLayout
+    private static final String PREFS_NAME = "user_profile_prefs";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_PASSWORD = "password";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             setContentView(R.layout.activity_main);
             initializeViews();
+            loadSavedCredentials();
             setupClickListeners(mAuth);
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Error initializing views: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void loadSavedCredentials() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String savedEmail = prefs.getString(KEY_EMAIL, "");
+        String savedPassword = prefs.getString(KEY_PASSWORD, "");
+        if (emailEditText != null) emailEditText.setText(savedEmail);
+        if (passwordEditText != null) passwordEditText.setText(savedPassword);
     }
 
     // Update setupClickListeners to accept FirebaseAuth

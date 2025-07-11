@@ -193,36 +193,6 @@
 
                 </LinearLayout>
 
-                <!-- Email Address -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Email Address"
-                        android:textSize="14sp"
-                        android:textColor="#333333"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
-
-                    <EditText
-                        android:id="@+id/email_edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:hint="09XXXXXXXXX"
-                        android:background="@drawable/edittext_background"
-                        android:paddingHorizontal="16dp"
-                        android:textSize="16sp"
-                        android:textColor="#333333"
-                        android:textColorHint="#999999"
-                        android:inputType="textEmailAddress" />
-
-                </LinearLayout>
-
                 <!-- Province and City Row -->
                 <LinearLayout
                     android:layout_width="match_parent"

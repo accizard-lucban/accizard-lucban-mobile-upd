@@ -2,6 +2,7 @@ package com.example.accizardlucban;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,10 @@ public class ProfileActivity extends AppCompatActivity {
     private Button editProfileButton;
     private Switch locationSwitch, notificationSwitch;
     private LinearLayout termsLayout, deleteAccountLayout;
+
+    private static final String PREFS_NAME = "user_profile_prefs";
+    private static final String KEY_FIRST_NAME = "first_name";
+    private static final String KEY_LAST_NAME = "last_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +109,14 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserData() {
-        // TODO: Load user data from SharedPreferences or database
-        // For now, using placeholder data
-        residentName.setText("Juan Dela Cruz");
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String firstName = prefs.getString(KEY_FIRST_NAME, "");
+        String lastName = prefs.getString(KEY_LAST_NAME, "");
+        String displayName = (firstName + " " + lastName).trim();
+        if (displayName.isEmpty()) {
+            displayName = "Your Name";
+        }
+        residentName.setText(displayName);
     }
 
     private void showSignOutDialog() {

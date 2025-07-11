@@ -12,14 +12,30 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditProfileActivity extends AppCompatActivity {
 
     private ImageView backButton, profilePicture, editPictureButton;
     private Button saveButton;
-    private EditText firstNameEdit, lastNameEdit, mobileNumberEdit, emailEdit,
+    private EditText firstNameEdit, lastNameEdit, mobileNumberEdit,
             provinceEdit, cityEdit, passwordEdit;
     private Spinner barangaySpinner;
+
+    private static final String PREFS_NAME = "user_profile_prefs";
+    private static final String KEY_FIRST_NAME = "first_name";
+    private static final String KEY_LAST_NAME = "last_name";
+    private static final String KEY_MOBILE = "mobile_number";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_PROVINCE = "province";
+    private static final String KEY_CITY = "city";
+    private static final String KEY_PASSWORD = "password";
+    private static final String KEY_BARANGAY = "barangay";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +57,6 @@ public class EditProfileActivity extends AppCompatActivity {
         firstNameEdit = findViewById(R.id.first_name_edit);
         lastNameEdit = findViewById(R.id.last_name_edit);
         mobileNumberEdit = findViewById(R.id.mobile_number_edit);
-        emailEdit = findViewById(R.id.email_edit);
         provinceEdit = findViewById(R.id.province_edit);
         cityEdit = findViewById(R.id.city_edit);
         passwordEdit = findViewById(R.id.password_edit);
@@ -96,39 +111,103 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    private SharedPreferences getUserPrefs() {
+        return getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+    }
+
     private void loadUserData() {
-        // TODO: Load existing user data from SharedPreferences or database
-        // For demonstration, setting placeholder data
-        firstNameEdit.setText("Juan");
-        lastNameEdit.setText("Dela Cruz");
-        mobileNumberEdit.setText("09123456789");
-        emailEdit.setText("juan.delacruz@email.com");
-        provinceEdit.setText("Quezon");
-        cityEdit.setText("Lucban");
+        SharedPreferences prefs = getUserPrefs();
+        firstNameEdit.setText(prefs.getString(KEY_FIRST_NAME, ""));
+        lastNameEdit.setText(prefs.getString(KEY_LAST_NAME, ""));
+        mobileNumberEdit.setText(prefs.getString(KEY_MOBILE, ""));
+        provinceEdit.setText(prefs.getString(KEY_PROVINCE, ""));
+        cityEdit.setText(prefs.getString(KEY_CITY, ""));
         // Don't set password for security
+        // Set barangay spinner selection
+        String barangay = prefs.getString(KEY_BARANGAY, "Select Barangay");
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) barangaySpinner.getAdapter();
+        if (adapter != null && barangay != null) {
+            int position = adapter.getPosition(barangay);
+            if (position >= 0) {
+                barangaySpinner.setSelection(position);
+            }
+        }
     }
 
     private void saveProfile() {
-        // Validate required fields
         if (!validateForm()) {
             return;
         }
-
-        // Get form data
         String firstName = firstNameEdit.getText().toString().trim();
         String lastName = lastNameEdit.getText().toString().trim();
         String mobileNumber = mobileNumberEdit.getText().toString().trim();
-        String email = emailEdit.getText().toString().trim();
         String province = provinceEdit.getText().toString().trim();
         String city = cityEdit.getText().toString().trim();
         String password = passwordEdit.getText().toString().trim();
         String barangay = barangaySpinner.getSelectedItem().toString();
 
-        // TODO: Save data to SharedPreferences or send to server
-        // For now, just show success message
-        Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+        // Save to SharedPreferences
+        SharedPreferences.Editor editor = getUserPrefs().edit();
+        editor.putString(KEY_FIRST_NAME, firstName);
+        editor.putString(KEY_LAST_NAME, lastName);
+        editor.putString(KEY_MOBILE, mobileNumber);
+        // Do NOT save email here; only after Firebase update (but now removed)
+        editor.putString(KEY_PROVINCE, province);
+        editor.putString(KEY_CITY, city);
+        editor.putString(KEY_BARANGAY, barangay);
+        // Do NOT save password here; only after Firebase update
+        editor.apply();
 
-        // Return to profile activity
+        // Update Firebase Auth password if changed
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            boolean needToUpdate = false;
+            // Email update removed
+            if (!password.isEmpty()) {
+                user.updatePassword(password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            SharedPreferences.Editor pwEditor = getUserPrefs().edit();
+                            pwEditor.putString(KEY_PASSWORD, password);
+                            pwEditor.apply();
+                            Toast.makeText(this, "Password updated successfully!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String errorMsg = (task.getException() != null) ? task.getException().getMessage() : "Unknown error";
+                            Toast.makeText(this, "Failed to update password in Firebase: " + errorMsg, Toast.LENGTH_LONG).show();
+                            if (errorMsg != null && errorMsg.toLowerCase().contains("recent login")) {
+                                Toast.makeText(this, "Please re-authenticate and try again.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                needToUpdate = true;
+            }
+
+            // Update Firestore user profile
+            String uid = user.getUid();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            Map<String, Object> userProfile = new HashMap<>();
+            userProfile.put("firstName", firstName);
+            userProfile.put("lastName", lastName);
+            userProfile.put("fullName", firstName + " " + lastName);
+            userProfile.put("mobileNumber", mobileNumber);
+            // userProfile.put("email", email); // removed
+            userProfile.put("province", province);
+            userProfile.put("city", city);
+            userProfile.put("barangay", barangay);
+            db.collection("users").document(uid)
+                .update(userProfile)
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to update profile on server: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+
+            if (needToUpdate) {
+                Toast.makeText(this, "Profile and Firebase Auth updated successfully!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+        }
         finish();
     }
 
@@ -157,15 +236,7 @@ public class EditProfileActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // Validate email
-        String email = emailEdit.getText().toString().trim();
-        if (TextUtils.isEmpty(email)) {
-            emailEdit.setError("Email is required");
-            isValid = false;
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailEdit.setError("Invalid email format");
-            isValid = false;
-        }
+        // Email validation removed
 
         // Validate province
         if (TextUtils.isEmpty(provinceEdit.getText().toString().trim())) {

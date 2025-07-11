@@ -45,7 +45,7 @@ dependencies {
     implementation(libs.viewpager2)
     implementation(libs.fragment)
 
-    // Mapbox Maps SDK for Android
+    // Mapbox Maps SDK for Android (stable version)
     implementation("com.mapbox.maps:android:11.13.1")
 
     testImplementation(libs.junit)
