@@ -64,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadSavedCredentials() {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String savedEmail = prefs.getString(KEY_EMAIL, "");
-        String savedPassword = prefs.getString(KEY_PASSWORD, "");
-        if (emailEditText != null) emailEditText.setText(savedEmail);
-        if (passwordEditText != null) passwordEditText.setText(savedPassword);
     }
 
     // Update setupClickListeners to accept FirebaseAuth

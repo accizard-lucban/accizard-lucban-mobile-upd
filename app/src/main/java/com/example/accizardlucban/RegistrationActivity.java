@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.SharedPreferences;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -18,6 +19,10 @@ public class RegistrationActivity extends AppCompatActivity {
     private CheckBox cbTerms;
     private Button btnCreateAccount;
     private TextView tvSignIn;
+
+    private static final String PREFS_NAME = "user_profile_prefs";
+    private static final String KEY_FIRST_NAME = "first_name";
+    private static final String KEY_LAST_NAME = "last_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +148,13 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void proceedToAddressInfo() {
         try {
+            // Save first and last name to SharedPreferences
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(KEY_FIRST_NAME, etFirstName.getText().toString().trim());
+            editor.putString(KEY_LAST_NAME, etLastName.getText().toString().trim());
+            editor.apply();
+
             Intent intent = new Intent(RegistrationActivity.this, AddressInfoActivity.class);
             intent.putExtra("firstName", etFirstName.getText().toString().trim());
             intent.putExtra("lastName", etLastName.getText().toString().trim());

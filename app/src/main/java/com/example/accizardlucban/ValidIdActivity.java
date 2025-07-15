@@ -38,7 +38,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class ValidIdActivity extends AppCompatActivity {
@@ -571,14 +574,18 @@ public class ValidIdActivity extends AppCompatActivity {
         userData.put("barangay", barangay);
         userData.put("profilePictureUrl", profilePictureUrl != null ? profilePictureUrl : "");
         userData.put("validIdUrl", validIdUrl != null ? validIdUrl : "");
-        userData.put("createdAt", System.currentTimeMillis());
+        // Add createdDate and createdTime in requested formats (with AM/PM for time)
+        String createdDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date());
+        String createdTime = new SimpleDateFormat("hh:mm:ss A", Locale.getDefault()).format(new Date());
+        userData.put("createdDate", createdDate);
+        userData.put("createdTime", createdTime);
         userData.put("isVerified", false);
 
-        // Save to Firestore using FirestoreHelper with RID-# as document ID
-        FirestoreHelper.createUser(userId, userData,
-                new OnSuccessListener<Void>() {
+        // Save to Firestore using FirestoreHelper with Firestore auto-ID
+        FirestoreHelper.createUserWithAutoId(userData,
+                new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
+                    public void onSuccess(DocumentReference documentReference) {
                         Log.d(TAG, "User data saved successfully");
                         // Navigate to success screen
                         proceedToSuccess();

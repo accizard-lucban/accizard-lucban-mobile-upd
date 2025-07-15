@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import android.content.SharedPreferences;
 
 public class MainDashboard extends AppCompatActivity {
 
@@ -21,6 +22,10 @@ public class MainDashboard extends AppCompatActivity {
 
     // NEW: ImageView buttons
     private ImageView helpButton, profileButton;
+
+    private static final String PREFS_NAME = "user_profile_prefs";
+    private static final String KEY_FIRST_NAME = "first_name";
+    private static final String KEY_LAST_NAME = "last_name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,8 +235,15 @@ public class MainDashboard extends AppCompatActivity {
     private void loadUserData() {
         try {
             // Load user data from preferences or database
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            String firstName = prefs.getString(KEY_FIRST_NAME, "");
+            String lastName = prefs.getString(KEY_LAST_NAME, "");
+            String displayName = (firstName + " " + lastName).trim();
+            if (displayName.isEmpty()) {
+                displayName = "Your Name";
+            }
             if (userNameText != null) {
-                userNameText.setText("Winter");
+                userNameText.setText(displayName);
             }
             if (locationText != null) {
                 locationText.setText("Brgy. Tinamnan");

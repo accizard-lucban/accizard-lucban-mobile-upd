@@ -66,6 +66,16 @@ public class FirestoreHelper {
                 .addOnFailureListener(failureListener);
     }
     
+    // Create user with Firestore auto-generated document ID
+    public static void createUserWithAutoId(Map<String, Object> userData,
+                                            OnSuccessListener<DocumentReference> successListener,
+                                            OnFailureListener failureListener) {
+        getInstance().collection(COLLECTION_USERS)
+            .add(userData)
+            .addOnSuccessListener(successListener)
+            .addOnFailureListener(failureListener);
+    }
+    
     // Report operations
     public static void createReport(Map<String, Object> reportData,
                                    OnSuccessListener<DocumentReference> successListener,

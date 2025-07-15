@@ -18,6 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -151,18 +153,15 @@ public class EditProfileActivity extends AppCompatActivity {
         editor.putString(KEY_FIRST_NAME, firstName);
         editor.putString(KEY_LAST_NAME, lastName);
         editor.putString(KEY_MOBILE, mobileNumber);
-        // Do NOT save email here; only after Firebase update (but now removed)
         editor.putString(KEY_PROVINCE, province);
         editor.putString(KEY_CITY, city);
         editor.putString(KEY_BARANGAY, barangay);
-        // Do NOT save password here; only after Firebase update
         editor.apply();
 
         // Update Firebase Auth password if changed
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            boolean needToUpdate = false;
-            // Email update removed
+            final boolean[] needToUpdate = {false};
             if (!password.isEmpty()) {
                 user.updatePassword(password)
                     .addOnCompleteListener(task -> {
@@ -171,6 +170,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             pwEditor.putString(KEY_PASSWORD, password);
                             pwEditor.apply();
                             Toast.makeText(this, "Password updated successfully!", Toast.LENGTH_SHORT).show();
+                            // No sign out or redirect, user stays logged in
                         } else {
                             String errorMsg = (task.getException() != null) ? task.getException().getMessage() : "Unknown error";
                             Toast.makeText(this, "Failed to update password in Firebase: " + errorMsg, Toast.LENGTH_LONG).show();
@@ -179,36 +179,52 @@ public class EditProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
-                needToUpdate = true;
+                needToUpdate[0] = true;
             }
 
-            // Update Firestore user profile
-            String uid = user.getUid();
+            // Update Firestore user profile by finding the document with matching firebaseUid
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            Map<String, Object> userProfile = new HashMap<>();
-            userProfile.put("firstName", firstName);
-            userProfile.put("lastName", lastName);
-            userProfile.put("fullName", firstName + " " + lastName);
-            userProfile.put("mobileNumber", mobileNumber);
-            // userProfile.put("email", email); // removed
-            userProfile.put("province", province);
-            userProfile.put("city", city);
-            userProfile.put("barangay", barangay);
-            db.collection("users").document(uid)
-                .update(userProfile)
+            String firebaseUid = user.getUid();
+            db.collection("users")
+                .whereEqualTo("firebaseUid", firebaseUid)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+                        String docId = doc.getId();
+                        Map<String, Object> userProfile = new HashMap<>();
+                        userProfile.put("firstName", firstName);
+                        userProfile.put("lastName", lastName);
+                        userProfile.put("fullName", firstName + " " + lastName);
+                        userProfile.put("mobileNumber", mobileNumber);
+                        userProfile.put("province", province);
+                        userProfile.put("city", city);
+                        userProfile.put("barangay", barangay);
+                        db.collection("users").document(docId)
+                            .update(userProfile)
+                            .addOnSuccessListener(aVoid -> {
+                                if (needToUpdate[0]) {
+                                    Toast.makeText(this, "Profile and Firebase Auth updated successfully!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                                }
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to update profile on server: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                    } else {
+                        Toast.makeText(this, "User profile not found in database.", Toast.LENGTH_LONG).show();
+                    }
+                })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to update profile on server: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Failed to query user profile: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
-
-            if (needToUpdate) {
-                Toast.makeText(this, "Profile and Firebase Auth updated successfully!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
-            }
         } else {
             Toast.makeText(this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+            finish();
         }
-        finish();
     }
 
     private boolean validateForm() {
