@@ -574,47 +574,34 @@ public class ValidIdActivity extends AppCompatActivity {
         userData.put("barangay", barangay);
         userData.put("profilePictureUrl", profilePictureUrl != null ? profilePictureUrl : "");
         userData.put("validIdUrl", validIdUrl != null ? validIdUrl : "");
-        // Add createdDate and createdTime in requested formats (with AM/PM for time)
-        String createdDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()).format(new Date());
-        String createdTime = new SimpleDateFormat("hh:mm:ss A", Locale.getDefault()).format(new Date());
+        String createdDate = new java.text.SimpleDateFormat("MM/dd/yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+        String createdTime = new java.text.SimpleDateFormat("hh:mm:ss a", java.util.Locale.getDefault()).format(new java.util.Date());
         userData.put("createdDate", createdDate);
         userData.put("createdTime", createdTime);
         userData.put("isVerified", false);
 
-        // Save to Firestore using FirestoreHelper with Firestore auto-ID
         FirestoreHelper.createUserWithAutoId(userData,
-                new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "User data saved successfully");
-                        // Navigate to success screen
-                        proceedToSuccess();
-                    }
-                },
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        btnNext.setEnabled(true);
-                        btnNext.setText("Next");
-                        Log.w(TAG, "Error saving user data", e);
-                        Toast.makeText(ValidIdActivity.this,
-                                "Error saving user data: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
-    }
-
-    private void proceedToSuccess() {
-        try {
-            Intent intent = new Intent(ValidIdActivity.this, SuccessActivity.class);
-            intent.putExtra("message", "Account created successfully!");
-            intent.putExtra("nextActivity", "MainActivity");
-            startActivity(intent);
-            finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Registration completed successfully!", Toast.LENGTH_LONG).show();
-            finish();
-        }
+            new com.google.android.gms.tasks.OnSuccessListener<com.google.firebase.firestore.DocumentReference>() {
+                @Override
+                public void onSuccess(com.google.firebase.firestore.DocumentReference documentReference) {
+                    android.util.Log.d(TAG, "User data saved successfully");
+                    // Navigate to success screen with clean stack
+                    Intent intent = new Intent(ValidIdActivity.this, SuccessActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            },
+            new com.google.android.gms.tasks.OnFailureListener() {
+                @Override
+                public void onFailure(@androidx.annotation.NonNull Exception e) {
+                    btnNext.setEnabled(true);
+                    btnNext.setText("Next");
+                    android.util.Log.w(TAG, "Error saving user data", e);
+                    android.widget.Toast.makeText(ValidIdActivity.this,
+                            "Error saving user data: " + e.getMessage(),
+                            android.widget.Toast.LENGTH_LONG).show();
+                }
+            });
     }
 }

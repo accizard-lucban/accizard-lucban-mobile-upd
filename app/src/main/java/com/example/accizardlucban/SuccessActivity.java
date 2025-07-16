@@ -40,6 +40,5 @@ public class SuccessActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Disable back button to prevent going back to registration flow
-        // User must click "Go Back to Login" button
     }
 }

@@ -23,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Button editProfileButton;
     private Switch locationSwitch, notificationSwitch;
     private LinearLayout termsLayout, deleteAccountLayout;
+    private TextView createdDateText;
 
     private static final String PREFS_NAME = "user_profile_prefs";
     private static final String KEY_FIRST_NAME = "first_name";
@@ -47,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
         notificationSwitch = findViewById(R.id.notification_switch);
         termsLayout = findViewById(R.id.terms_layout);
         deleteAccountLayout = findViewById(R.id.delete_account_layout);
+        createdDateText = findViewById(R.id.created_date_text); // Add this TextView in your layout
     }
 
     private void setupClickListeners() {
@@ -117,6 +119,43 @@ public class ProfileActivity extends AppCompatActivity {
             displayName = "Your Name";
         }
         residentName.setText(displayName);
+
+        // Load createdDate from Firestore
+        String firebaseUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ? com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (firebaseUid != null && createdDateText != null) {
+            com.google.firebase.firestore.FirebaseFirestore db = com.google.firebase.firestore.FirebaseFirestore.getInstance();
+            db.collection("users")
+                .whereEqualTo("firebaseUid", firebaseUid)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        com.google.firebase.firestore.QueryDocumentSnapshot doc = (com.google.firebase.firestore.QueryDocumentSnapshot) queryDocumentSnapshots.getDocuments().get(0);
+                        String createdDate = doc.getString("createdDate");
+                        if (createdDate != null && !createdDate.isEmpty()) {
+                            // Convert MM/dd/yyyy to 'Month dd, yyyy'
+                            try {
+                                java.text.SimpleDateFormat inputFormat = new java.text.SimpleDateFormat("MM/dd/yyyy", java.util.Locale.getDefault());
+                                java.text.SimpleDateFormat outputFormat = new java.text.SimpleDateFormat("MMMM dd, yyyy", java.util.Locale.getDefault());
+                                java.util.Date date = inputFormat.parse(createdDate);
+                                String formatted = outputFormat.format(date);
+                                createdDateText.setText("Created on " + formatted);
+                                createdDateText.setVisibility(View.VISIBLE);
+                            } catch (Exception e) {
+                                createdDateText.setText("Created on " + createdDate);
+                                createdDateText.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            createdDateText.setVisibility(View.GONE);
+                        }
+                    } else {
+                        createdDateText.setVisibility(View.GONE);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    createdDateText.setVisibility(View.GONE);
+                });
+        }
     }
 
     private void showSignOutDialog() {

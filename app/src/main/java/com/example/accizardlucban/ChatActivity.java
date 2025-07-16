@@ -17,6 +17,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import android.widget.PopupMenu;
+import android.widget.ImageButton;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.provider.MediaStore;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -26,11 +35,17 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageInput;
     private ImageView sendButton, backButton, profileButton;
     private LinearLayout homeTab, chatTab, reportTab, mapTab, alertsTab;
-    private LinearLayout takePhotoButton, openGalleryButton, referenceReportButton;
     private TextView statusText;
+    private ImageButton addActionButton;
 
     private ChatAdapter chatAdapter;
     private List<ChatMessage> messagesList;
+
+    private static final int CAMERA_REQUEST_CODE = 201;
+    private static final int GALLERY_REQUEST_CODE = 202;
+    private static final int CAMERA_PERMISSION_CODE = 203;
+    private static final int STORAGE_PERMISSION_CODE = 204;
+    private Uri photoUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +75,7 @@ public class ChatActivity extends AppCompatActivity {
             backButton = findViewById(R.id.backButton);
             statusText = findViewById(R.id.statusText);
             profileButton = findViewById(R.id.profileButton);
+            addActionButton = findViewById(R.id.addActionButton);
 
             // Bottom navigation
             homeTab = findViewById(R.id.homeTab);
@@ -67,11 +83,6 @@ public class ChatActivity extends AppCompatActivity {
             reportTab = findViewById(R.id.reportTab);
             mapTab = findViewById(R.id.mapTab);
             alertsTab = findViewById(R.id.alertsTab);
-
-            // Action buttons
-            takePhotoButton = findViewById(R.id.takePhotoButton);
-            openGalleryButton = findViewById(R.id.openGalleryButton);
-            referenceReportButton = findViewById(R.id.referenceReportButton);
 
             Log.d(TAG, "Views initialized successfully");
         } catch (Exception e) {
@@ -104,6 +115,11 @@ public class ChatActivity extends AppCompatActivity {
         try {
             Log.d(TAG, "Setting up click listeners");
 
+            // Add Action Button (shows popup menu)
+            if (addActionButton != null) {
+                addActionButton.setOnClickListener(v -> showActionPopupMenu(v));
+            }
+
             // Back button
             if (backButton != null) {
                 backButton.setOnClickListener(v -> {
@@ -123,9 +139,6 @@ public class ChatActivity extends AppCompatActivity {
 
             // Bottom navigation tabs
             setupBottomNavigationListeners();
-
-            // Action buttons
-            setupActionButtons();
 
             Log.d(TAG, "Click listeners setup completed");
         } catch (Exception e) {
@@ -231,34 +244,6 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void setupActionButtons() {
-        // Take photo button
-        if (takePhotoButton != null) {
-            takePhotoButton.setOnClickListener(v -> {
-                Log.d(TAG, "Take photo button clicked");
-                addMessage("📸 Taking a photo...", true, getCurrentTime());
-                Toast.makeText(ChatActivity.this, "Camera feature coming soon", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        // Open gallery button
-        if (openGalleryButton != null) {
-            openGalleryButton.setOnClickListener(v -> {
-                Log.d(TAG, "Open gallery button clicked");
-                addMessage("🖼️ Opening gallery...", true, getCurrentTime());
-                Toast.makeText(ChatActivity.this, "Gallery feature coming soon", Toast.LENGTH_SHORT).show();
-            });
-        }
-
-        // Reference report button
-        if (referenceReportButton != null) {
-            referenceReportButton.setOnClickListener(v -> {
-                Log.d(TAG, "Reference report button clicked");
-                addMessage("Reference to my report #REP-001", true, getCurrentTime());
-            });
-        }
-    }
-
     private void loadInitialMessages() {
         try {
             Log.d(TAG, "Loading initial messages");
@@ -326,6 +311,116 @@ public class ChatActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "Error getting current time", e);
             return "Now";
+        }
+    }
+
+    private void showActionPopupMenu(View anchor) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        popup.getMenu().add(0, 1, 0, "Take a Photo");
+        popup.getMenu().add(0, 2, 1, "Open Gallery");
+        popup.getMenu().add(0, 3, 2, "Reference Report");
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case 1:
+                    if (checkCameraPermission()) {
+                        openCamera();
+                    } else {
+                        requestCameraPermission();
+                    }
+                    return true;
+                case 2:
+                    if (checkStoragePermission()) {
+                        openGallery();
+                    } else {
+                        requestStoragePermission();
+                    }
+                    return true;
+                case 3:
+                    showReferenceReportDialog();
+                    return true;
+            }
+            return false;
+        });
+        popup.show();
+    }
+
+    private boolean checkCameraPermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+    }
+
+    private boolean checkStoragePermission() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestStoragePermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+
+    private void openCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, "Camera not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void openGallery() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if (galleryIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, "Gallery not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showReferenceReportDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Reference Report");
+        final EditText input = new EditText(this);
+        input.setHint("Enter report reference (e.g., #REP-001)");
+        builder.setView(input);
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String ref = input.getText().toString().trim();
+            if (!ref.isEmpty()) {
+                addMessage("Reference to my report " + ref, true, getCurrentTime());
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == STORAGE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openGallery();
+            } else {
+                Toast.makeText(this, "Storage permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == CAMERA_REQUEST_CODE && data != null) {
+                addMessage("📸 Photo taken! (simulated)", true, getCurrentTime());
+            } else if (requestCode == GALLERY_REQUEST_CODE && data != null) {
+                addMessage("🖼️ Image selected from gallery! (simulated)", true, getCurrentTime());
+            }
         }
     }
 

@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.location)
     implementation(libs.viewpager2)
     implementation(libs.fragment)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     // Mapbox Maps SDK for Android (stable version)
     implementation("com.mapbox.maps:android:11.13.1")
