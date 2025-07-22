@@ -178,16 +178,16 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp" />
 
-            <EditText
-                android:id="@+id/etProvince"
+            <AutoCompleteTextView
+                android:id="@+id/actvProvince"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Enter your province"
-                android:textColorHint="@color/text_hint"
-                android:textColor="@color/text_dark"
-                android:paddingHorizontal="16dp"
                 android:inputType="textCapWords"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_hint"
                 android:layout_marginBottom="16dp" />
 
             <!-- City/Town Field -->
@@ -199,33 +199,52 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="8dp" />
 
-            <EditText
-                android:id="@+id/etCityTown"
+            <AutoCompleteTextView
+                android:id="@+id/actvCityTown"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/edittext_background"
                 android:hint="Enter your city/town"
+                android:inputType="textCapWords"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/text_dark"
+                android:textColorHint="@color/text_hint"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Barangay Field (wrapped for dynamic visibility) -->
+            <LinearLayout
+                android:id="@+id/layoutBarangay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Barangay"
+                    android:textColor="@color/text_dark"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerBarangay"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/edittext_background"
+                    android:layout_marginBottom="40dp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etBarangayOther"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Enter your barangay"
                 android:textColorHint="@color/text_hint"
                 android:textColor="@color/text_dark"
                 android:paddingHorizontal="16dp"
                 android:inputType="textCapWords"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Barangay Field -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Barangay"
-                android:textColor="@color/text_dark"
-                android:textSize="14sp"
-                android:layout_marginBottom="8dp" />
-
-            <Spinner
-                android:id="@+id/spinnerBarangay"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/edittext_background"
-                android:layout_marginBottom="40dp" />
+                android:layout_marginBottom="16dp"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"

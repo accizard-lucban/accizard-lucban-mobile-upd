@@ -15,6 +15,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import androidx.annotation.NonNull;
 import android.content.SharedPreferences;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -92,10 +94,8 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull com.google.android.gms.tasks.Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(MainActivity.this, "Firebase Auth: Signed in successfully", Toast.LENGTH_SHORT).show();
-                                    // Navigate to MainDashboard
-                                    Intent intent = new Intent(MainActivity.this, MainDashboard.class);
-                                    startActivity(intent);
-                                    finish();
+                                    // Fetch user profile from Firestore and save to SharedPreferences
+                                    fetchAndSaveUserProfile(email);
                                 } else {
                                     Toast.makeText(MainActivity.this, "Firebase Auth failed: " + (task.getException() != null ? task.getException().getMessage() : "Unknown error"), Toast.LENGTH_SHORT).show();
                                 }
@@ -205,5 +205,34 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Error during sign in: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void fetchAndSaveUserProfile(String email) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("first_name", doc.getString("firstName"));
+                        editor.putString("last_name", doc.getString("lastName"));
+                        editor.putString("mobile_number", doc.getString("phoneNumber"));
+                        editor.putString("email", doc.getString("email"));
+                        editor.putString("province", doc.getString("province"));
+                        editor.putString("city", doc.getString("cityTown"));
+                        editor.putString("barangay", doc.getString("barangay"));
+                        editor.apply();
+                        break;
+                    }
+                }
+                // Navigate to MainDashboard after saving user data
+                Intent intent = new Intent(MainActivity.this, MainDashboard.class);
+                startActivity(intent);
+                finish();
+            });
     }
 }

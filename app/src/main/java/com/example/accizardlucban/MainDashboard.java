@@ -26,6 +26,7 @@ public class MainDashboard extends AppCompatActivity {
     private static final String PREFS_NAME = "user_profile_prefs";
     private static final String KEY_FIRST_NAME = "first_name";
     private static final String KEY_LAST_NAME = "last_name";
+    private static final String KEY_BARANGAY = "barangay";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -245,8 +246,10 @@ public class MainDashboard extends AppCompatActivity {
             if (userNameText != null) {
                 userNameText.setText(displayName);
             }
+            // Load barangay for locationText
             if (locationText != null) {
-                locationText.setText("Brgy. Tinamnan");
+                String barangay = prefs.getString(KEY_BARANGAY, "Select Barangay");
+                locationText.setText(barangay);
             }
             if (reportCountText != null) {
                 reportCountText.setText("50");

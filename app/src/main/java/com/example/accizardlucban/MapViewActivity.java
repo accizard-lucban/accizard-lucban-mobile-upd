@@ -72,24 +72,22 @@ public class MapViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        // Initialize MapView
+        // Initialize MapView and MapboxMap
         mapView = findViewById(R.id.mapView);
         if (mapView != null) {
             mapboxMap = mapView.getMapboxMap();
-            mapboxMap.loadStyleUri(Style.MAPBOX_STREETS);
-
-            // Initialize camera animations plugin
-            cameraAnimationsPlugin = mapView.getPlugin("camera");
-
-            // Set initial camera position to Lucban center
-            Point lucbanCenter = Point.fromLngLat(121.5564, 14.1136);
-            CameraOptions initialCamera = new CameraOptions.Builder()
-                    .center(lucbanCenter)
-                    .zoom(14.0)
-                    .build();
-            mapboxMap.setCamera(initialCamera);
-
-            Toast.makeText(this, "Map loaded successfully. Search for locations to navigate.", Toast.LENGTH_SHORT).show();
+            mapboxMap.loadStyleUri(Style.MAPBOX_STREETS, style -> {
+                // Correct plugin key for Mapbox v10+
+                cameraAnimationsPlugin = mapView.getPlugin("com.mapbox.maps.plugin.animation.camera");
+                // Set initial camera position to Lucban center
+                Point lucbanCenter = Point.fromLngLat(121.5564, 14.1136);
+                CameraOptions initialCamera = new CameraOptions.Builder()
+                        .center(lucbanCenter)
+                        .zoom(14.0)
+                        .build();
+                mapboxMap.setCamera(initialCamera);
+                Toast.makeText(this, "Map loaded successfully. Search for locations to navigate.", Toast.LENGTH_SHORT).show();
+            });
         }
 
         initializeSearchPlaces();
@@ -449,76 +447,37 @@ public class MapViewActivity extends AppCompatActivity {
     }
 
         private void animateToLocation(Point point, double zoom) {
-        if (cameraAnimationsPlugin != null && mapboxMap != null) {
-            try {
-                // Create camera options for the target location
-                CameraOptions cameraOptions = new CameraOptions.Builder()
-                        .center(point)
-                        .zoom(zoom)
-                        .build();
-
-                // Create animation options for smooth transition
-                MapAnimationOptions animationOptions = new MapAnimationOptions.Builder()
-                        .duration(3000) // 3 seconds animation for more visible movement
-                        .build();
-
-                // Show navigation start message
-                Toast.makeText(this, "Starting navigation...", Toast.LENGTH_SHORT).show();
-
-                // Log the navigation attempt
-                android.util.Log.d("MapNavigation", "Navigating to: " + point.latitude() + ", " + point.longitude() + " with zoom: " + zoom);
-
-                // Animate to the location
-                cameraAnimationsPlugin.flyTo(cameraOptions, animationOptions, new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        // Animation started
-                        runOnUiThread(() -> {
-                            Toast.makeText(MapViewActivity.this, "Camera animation started", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        // Animation completed - show arrival message
-                        runOnUiThread(() -> {
-                            Toast.makeText(MapViewActivity.this,
-                                    "Arrived at destination!", Toast.LENGTH_LONG).show();
-                        });
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        // Animation cancelled
-                        runOnUiThread(() -> {
-                            Toast.makeText(MapViewActivity.this,
-                                    "Navigation cancelled", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                        // Animation repeated
-                    }
-                });
-            } catch (Exception e) {
-                // Fallback to instant camera movement
-                try {
-                    CameraOptions cameraOptions = new CameraOptions.Builder()
-                            .center(point)
-                            .zoom(zoom)
-                            .build();
-                    mapboxMap.setCamera(cameraOptions);
-                    Toast.makeText(this, "Moved to location instantly", Toast.LENGTH_SHORT).show();
-                    android.util.Log.d("MapNavigation", "Used fallback navigation");
-                } catch (Exception ex) {
-                    Toast.makeText(this, "Error navigating to location: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
-                    android.util.Log.e("MapNavigation", "Navigation error: " + ex.getMessage());
-                }
-            }
-        } else {
-            Toast.makeText(this, "Map not ready for navigation", Toast.LENGTH_SHORT).show();
-            android.util.Log.e("MapNavigation", "Map or camera plugin not available");
+        if (mapboxMap == null) {
+            Toast.makeText(this, "Map not ready", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (cameraAnimationsPlugin == null) {
+            // fallback to instant move
+            CameraOptions cameraOptions = new CameraOptions.Builder()
+                    .center(point)
+                    .zoom(zoom)
+                    .build();
+            mapboxMap.setCamera(cameraOptions);
+            Toast.makeText(this, "Moved to location instantly", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            CameraOptions cameraOptions = new CameraOptions.Builder()
+                    .center(point)
+                    .zoom(zoom)
+                    .build();
+            MapAnimationOptions animationOptions = new MapAnimationOptions.Builder()
+                    .duration(2000)
+                    .build();
+            cameraAnimationsPlugin.flyTo(cameraOptions, animationOptions, null); // Pass null as Animator.AnimatorListener
+            Toast.makeText(this, "Navigating...", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            CameraOptions cameraOptions = new CameraOptions.Builder()
+                    .center(point)
+                    .zoom(zoom)
+                    .build();
+            mapboxMap.setCamera(cameraOptions);
+            Toast.makeText(this, "Moved to location instantly", Toast.LENGTH_SHORT).show();
         }
     }
 

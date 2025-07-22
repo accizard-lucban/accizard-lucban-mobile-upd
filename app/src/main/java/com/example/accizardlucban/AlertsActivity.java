@@ -29,6 +29,7 @@ public class AlertsActivity extends AppCompatActivity {
     private List<Announcement> announcementList = new ArrayList<>();
     private List<Announcement> fullAnnouncementList = new ArrayList<>(); // For filtering
     private SwipeRefreshLayout swipeRefreshLayout;
+    private String selectedFilter = "All";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +68,8 @@ public class AlertsActivity extends AppCompatActivity {
         filterSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
-                String selected = filterOptions[position];
-                filterAnnouncements(selected);
+                selectedFilter = filterOptions[position];
+                filterAnnouncements(selectedFilter);
             }
             @Override
             public void onNothingSelected(android.widget.AdapterView<?> parent) {}
@@ -182,10 +183,9 @@ public class AlertsActivity extends AppCompatActivity {
                                     doc.getString("description"),
                                     doc.getString("date")
                             );
-                            announcementList.add(ann);
                             fullAnnouncementList.add(ann);
                         }
-                        announcementAdapter.notifyDataSetChanged();
+                        filterAnnouncements(selectedFilter); // Apply the current filter after reload
                     } else {
                         String errorMsg = task.getException() != null ? task.getException().getMessage() : "Unknown error";
                         android.util.Log.e("AlertsActivity", "Error fetching announcements: " + errorMsg);
